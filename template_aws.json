@@ -1,0 +1,59 @@
+{
+    "variables": {
+        "aws_access_key": "",
+        "aws_secret_key": "",
+        "aws_region": "us-east-1",
+        "image_naming": "tarea1-packer-node",
+        "username": "ubuntu"
+    },
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{ user `aws_access_key` }}",
+            "secret_key": "{{ user `aws_secret_key` }}",
+            "source_ami_filter": {
+                "filters": {
+                    "virtualization-type": "hvm",
+                    "name": "ubuntu/images/*ubuntu-bionic-18.04-amd64-server-*",
+                    "root-device-type": "ebs"
+                },
+                "owners": [
+                    "099720109477"
+                ],
+                "most_recent": true
+            },
+            "ami_name": "{{ user `image_naming` }}-{{ timestamp }}",
+            "instance_type": "t2.small",
+            "ssh_username": "{{ user `username` }}",
+            "region": "{{ user `aws_region` }}"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "hello_world.js",
+            "destination": "/tmp/hello_world.js"
+        },
+        {
+            "type": "shell",
+            "script": "node_implementation.sh"
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "manifest",
+            "output": "output.json"
+        },
+        {
+            "type": "shell-local",
+            "inline": [
+                "@echo off",
+                "for /f \"tokens=3 delims=:\" %%a in ('type output.json ^| find /i \"artifact_id\"') do set ami_id=%%a",
+                "set ami_id=%ami_id:~0,-2%",
+                "echo AMI ID: %ami_id%",
+                "echo aws ec2 run-instances --image-id %ami_id% --instance-type t2.micro --key-name my-key-pair --subnet-id subnet-020400e85546a033f --security-group-ids sg-087634422d4c635ea",
+                "aws ec2 run-instances --image-id \"%ami_id%\" --instance-type t2.micro --key-name my-key-pair --subnet-id subnet-020400e85546a033f --security-group-ids sg-087634422d4c635ea"
+            ]
+        }
+    ]
+}
