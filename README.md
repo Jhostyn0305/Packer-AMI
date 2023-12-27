@@ -27,15 +27,19 @@ packer build template_aws.json
 #### Explicación
 La plantilla se compone de:
 * <b>variables:</b> Se albergará la información genérica para los builders, en este caso se harán uso de las siguientes variables: 
-  * <b>aws_access_key:</b> Clave de acceso generado en AWS. o aws_secret_key: Clave secreta generada en AWS. 
+  * <b>aws_access_key:</b> Clave de acceso generado en AWS. 
+  * <b>aws_secret_key:</b> Clave secreta generada en AWS. 
   * <b>aws_region:</b> Región en donde se montará la máquina virtual, para verificar las regiones y escoger la mejor que convenga se hizo uso del siguiente enlace.  https://aws.amazon.com/es/about-aws/globalinfrastructure/regions_az 
   * <b>image_namig:</b> El nombre identificado con el que se creará la imagen. 
-o	<b>username:</b> Es el nombre usuario por el medio que se podrá conectar a ssh. 
-* <b>builders:</b> En este caso ejecuta el proceso para la construcción de la AMI (Amazon Machine Image), en este caso es el proceso de construcción de la imagen, tomando en cuenta los atributos más importantes. 
-o	<b>Nota:</b> Cabe mencionar que para que ejecute correctamente el builder se debe tener instalado con anterioridad el plugin de amazon-ebs. 
-o	https://developer.hashicorp.com/packer/integrations/hashicorp/ amazon  
-•	<b>provisioners:</b> Este apartado es importante ya que será el encargado de instalar el nodejs y la puesta en marcha del proyecto con la palabra Hola Mundo. 
+  *	<b>username:</b> Es el nombre usuario por el medio que se podrá conectar a ssh. 
+* <b>builders:</b> En este caso ejecuta el proceso para la construcción de la AMI (Amazon Machine Image).
+
+  * <b>Nota:</b> Cabe mencionar que para que ejecute correctamente el builder se debe tener instalado con anterioridad el plugin de amazon-ebs. 
+	https://developer.hashicorp.com/packer/integrations/hashicorp/amazon  
+
+* <b>provisioners:</b> Este apartado es importante ya que será el encargado de instalar nodejs y la puesta en marcha del proyecto con la palabra Hola Mundo. 
+  * <b>Guía ejemplo:</b> https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-20-04
  
-* <b>post-processors:</b> Es un atributo adicional y ejecuta después de haber creado la imagen, en este caso se ejecutarán dos, uno que muestre un resumen de la construcción y el otro que genere automáticamente la instancia de la imagen. 
- 
-o	<b>Nota:</b> El segundo post procesor es el más importante debido a que es el necesario para que la instancia sea generada automáticamente, cabe mencionar que depende del resultado del manifest ya que ahí se encuentra la información del artifact_id que representa el identificador de la imagen. 
+* <b>post-processors:</b> Es un atributo adicional y ejecuta después de haber creado la imagen, en este caso se ejecutarán dos, uno que muestre un resumen de la construcción y el otro que genere automáticamente la instancia de la imagen.
+
+  * <b>Nota:</b> El segundo post procesor es el más importante debido a que es el necesario para que la instancia sea generada automáticamente, cabe mencionar que depende del resultado del manifest ya que ahí se encuentra la información del artifact_id que representa el identificador de la imagen. 
